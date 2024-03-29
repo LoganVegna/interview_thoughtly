@@ -68,28 +68,30 @@ edges = dict['edges']
 edge_dag = {}
 for edge in edges:
     
+    source_desc = nodes[edge['source']]['data'].get('description', edge['source'])
     # Ensure the dict key exists since we will be modifying the nested dict directly
-    if edge['source'] not in edge_dag:
-        edge_dag[edge['source']] = {}
+    if source_desc not in edge_dag:
+        edge_dag[source_desc] = {}
     sourceHandle = edge['sourceHandle'][1:]
-    edge_dag[edge['source']][sourceHandle] = edge['target']
+    edge_dag[source_desc][sourceHandle] = nodes[edge['target']]['data'].get('description', edge['target'])
 
+print(json.dumps(edge_dag, indent=2))
 
-# This will traverse the dag starting from the first edge listed in edges
-current_node_id = edges[0]['source']
-while True:
-    cur_node = nodes[current_node_id]['data']
+# # This will traverse the dag starting from the first edge listed in edges
+# current_node_id = edges[0]['source']
+# while True:
+#     cur_node = nodes[current_node_id]['data']
     
-    print("Phone Response: ", cur_node['description'])
-    if cur_node['type'] == "end":
-        break
+#     print("Phone Response: ", cur_node['description'])
+#     if cur_node['type'] == "end":
+#         break
     
-    available_options = list(edge_dag[current_node_id].keys())
-    user_response = input("Type your response: \n")
-    # Use the LLM to interpret the user's response and choose an option
-    chosen_option = interpret_response(cur_node['description'], user_response, available_options)
-    if chosen_option in available_options:
-        current_node_id = edge_dag[current_node_id][chosen_option]
-    else:
-        print("I'm sorry, I couldn't understand your response. Please try again.")
-    print("="*40)
+#     available_options = list(edge_dag[current_node_id].keys())
+#     user_response = input("Type your response: \n")
+#     # Use the LLM to interpret the user's response and choose an option
+#     chosen_option = interpret_response(cur_node['description'], user_response, available_options)
+#     if chosen_option in available_options:
+#         current_node_id = edge_dag[current_node_id][chosen_option]
+#     else:
+#         print("I'm sorry, I couldn't understand your response. Please try again.")
+#     print("="*40)
