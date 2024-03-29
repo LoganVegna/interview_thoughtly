@@ -29,7 +29,7 @@ import requests
 
 # This will use the huggingface API to query Mixtral-8x7 instead which works alot better. You will need your own access token
 API_URL = "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1"
-headers = {"Authorization": ""}
+headers = {"Authorization": "Bearer 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"}
 
 def query(payload):
     response = requests.post(API_URL, headers=headers, json=payload)
@@ -38,6 +38,8 @@ def query(payload):
 def interpret_response(question, response, options):
     prompt = f"Given the answer: '{response}' to the question '{question}', which of the possible options does the user whish to select from: [{', '.join(options)}]? only out put the exact text of the selected option. Selected option:"
     
+    print("prompt: " , prompt)
+
     output = query({
         "inputs": prompt,
     })
@@ -71,7 +73,7 @@ for edge in edges:
         edge_dag[edge['source']] = {}
     sourceHandle = edge['sourceHandle'][1:]
     edge_dag[edge['source']][sourceHandle] = edge['target']
-    
+
 
 # This will traverse the dag starting from the first edge listed in edges
 current_node_id = edges[0]['source']
